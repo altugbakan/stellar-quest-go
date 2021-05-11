@@ -40,7 +40,7 @@ func main() {
 	}
 	fmt.Println(string(body))
 
-	// Fetch the account from the network
+	// Fetch the account from the network.
 	client := horizonclient.DefaultTestNetClient
 	ar := horizonclient.AccountRequest{AccountID: pair.Address()}
 	sourceAccount, err := client.AccountDetail(ar)
@@ -57,7 +57,7 @@ func main() {
 		Amount:      "1000",
 	}
 
-	// Construct the transaction
+	// Construct the transaction.
 	tx, err := txnbuild.NewTransaction(
 		txnbuild.TransactionParams{
 			SourceAccount:        &sourceAccount,
@@ -71,18 +71,18 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	// Sign the transaction
+	// Sign the transaction.
 	tx, err = tx.Sign(network.TestNetworkPassphrase, pair)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	// Send the transaction to the network
+	// Send the transaction to the network.
 	status, err := client.SubmitTransaction(tx)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	// Print the response
+	// Print the response.
 	fmt.Println(status)
 }

@@ -29,7 +29,7 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	// Create the asset
+	// Create the asset.
 	asset := txnbuild.CreditAsset{
 		Code:   assetName,
 		Issuer: issuerAddress,
