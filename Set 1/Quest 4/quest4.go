@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/stellar/go/clients/horizonclient"
 	"github.com/stellar/go/keypair"
@@ -29,14 +28,6 @@ func main() {
 
 	fmt.Printf("The generated secret key is %v\n", pair.Seed())
 	fmt.Printf("The generated public key is %v\n", pair.Address())
-
-	// Save the account, needed for the other quest.
-	f, err := os.Create("account.txt")
-	f.WriteString("Public key: " + pair.Address() + " Private key: " + pair.Seed())
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer f.Close()
 
 	// Fund and create the generated account.
 	resp, err := http.Get("https://friendbot.stellar.org/?addr=" + pair.Address())
