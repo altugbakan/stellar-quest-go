@@ -1,2 +1,2 @@
-# stellar-quest-go
-Go solutions for Stellar Quest.
+# Stellar Quest Go Solutions
+Solutions implemented in Go for Stellar Quest.
