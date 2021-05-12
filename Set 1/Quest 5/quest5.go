@@ -88,6 +88,9 @@ func main() {
 		log.Fatalln(err)
 	}
 
+	// Print the response.
+	fmt.Printf("Successfully submitted transaction!\nTransaction ID: %v\n", status.ID)
+
 	// Build a payment operation.
 	paymentOp := txnbuild.Payment{
 		Destination: questAccount.Address(),
@@ -129,5 +132,5 @@ func main() {
 	}
 
 	// Print the response.
-	fmt.Println(status)
+	fmt.Printf("Successfully submitted transaction!\nTransaction ID: %v\n", status.ID)
 }

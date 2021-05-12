@@ -66,5 +66,5 @@ func main() {
 	}
 
 	// Print the response.
-	fmt.Println(status)
+	fmt.Printf("Successfully submitted transaction!\nTransaction ID: %v\n", status.ID)
 }
