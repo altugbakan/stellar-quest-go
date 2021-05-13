@@ -14,11 +14,12 @@ func main() {
 	// If you used the Quest 4 code to solve the question, you must wait
 	// 3.5 days or create a new claimable balance to solve the question.
 
-	// Enter your quest account secret key below.
-	secret := "SAGXUH5I7IMSDT6RLCF7HSP4UISLYTF6FVAYLTRYX6KSNLJQN266JHPK"
-	// Supply a custom claimable balance ID if you need it.
-	balanceID := ""
-	// ..........................................
+	// Ask user for secret key and balanceID input.
+	var secret, balanceID string
+	fmt.Printf("Please enter your secret key: ")
+	fmt.Scanln(&secret)
+	fmt.Printf("Please enter a balance ID if needed (Press \"Enter\" to skip): ")
+	fmt.Scanln(&balanceID)
 
 	// Get the keypair of the quest account from the secret key.
 	questAccount, _ := keypair.Parse(secret)
@@ -78,4 +79,8 @@ func main() {
 
 	// Print the response.
 	fmt.Printf("Successfully submitted transaction!\nTransaction ID: %v\n", status.ID)
+
+	// Wait for user input to exit.
+	fmt.Println("Press \"Enter\" to exit.")
+	fmt.Scanln()
 }

@@ -11,9 +11,10 @@ import (
 )
 
 func main() {
-	// Enter your quest account secret key below.
-	secret := "SAGXUH5I7IMSDT6RLCF7HSP4UISLYTF6FVAYLTRYX6KSNLJQN266JHPK"
-	// ..........................................
+	// Ask user for secret key input.
+	var secret string
+	fmt.Printf("Please enter your secret key: ")
+	fmt.Scanln(&secret)
 
 	// Get the keypair of the quest account from the secret key.
 	questAccount, _ := keypair.Parse(secret)
@@ -23,7 +24,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	fmt.Printf("The generated secret key is %v\n", pair.Seed())
 	fmt.Printf("The generated public key is %v\n", pair.Address())
 
@@ -79,4 +79,9 @@ func main() {
 
 	// Print the response.
 	fmt.Printf("Successfully submitted transaction!\nTransaction ID: %v\n", status.ID)
+
+	// Inform the user and wait for user input to exit.
+	fmt.Printf("The public key of the account you sponsored is \"%v\".", pair.Address())
+	fmt.Println("Press \"Enter\" to exit.")
+	fmt.Scanln()
 }

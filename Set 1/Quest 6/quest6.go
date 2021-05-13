@@ -11,12 +11,16 @@ import (
 )
 
 func main() {
-	// Enter your quest account secret key, asset name and
-	// the issuer address you created on Quest 5 below.
-	secret := "SAGXUH5I7IMSDT6RLCF7HSP4UISLYTF6FVAYLTRYX6KSNLJQN266JHPK"
-	assetName := "CSTM"
-	issuerAddress := "GDYXSHI7CZLRUE3CVISMYN7XB2Q7OW5HUT7RMX3W5PJE4PPA4GH5ZVTC"
-	// ..........................................
+	// Get the secret key, asset name and the issuer address
+	// created on Quest 5 below from user input.
+	var secret, assetName, issuerAddress string
+	fmt.Printf("Please enter your secret key: ")
+	fmt.Scanln(&secret)
+	fmt.Printf("Please enter the name of the asset you created in Quest 5: ")
+	fmt.Scanln(&assetName)
+	fmt.Printf("Please enter the public key of the issuer address of the" +
+		"asset you created on Quest 5: ")
+	fmt.Scanln(&issuerAddress)
 
 	// Get the keypair of the quest account from the secret key.
 	questAccount, _ := keypair.Parse(secret)
@@ -71,4 +75,8 @@ func main() {
 
 	// Print the response.
 	fmt.Printf("Successfully submitted transaction!\nTransaction ID: %v\n", status.ID)
+
+	// Wait for user input to exit.
+	fmt.Println("Press \"Enter\" to exit.")
+	fmt.Scanln()
 }

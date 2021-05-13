@@ -14,16 +14,16 @@ import (
 )
 
 func main() {
-	// Enter your quest account secret key below.
-	secret := "SAGXUH5I7IMSDT6RLCF7HSP4UISLYTF6FVAYLTRYX6KSNLJQN266JHPK"
-	// ..........................................
+	// Ask user for secret key input.
+	var secret string
+	fmt.Printf("Please enter your secret key: ")
+	fmt.Scanln(&secret)
 
 	// Generate a random testnet account.
 	pair, err := keypair.Random()
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	fmt.Printf("The generated secret key is %v\n", pair.Seed())
 	fmt.Printf("The generated public key is %v\n", pair.Address())
 
@@ -39,6 +39,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println("Friendbot response:")
 	fmt.Println(string(body))
 
 	// Fetch the account from the network.
@@ -90,4 +91,8 @@ func main() {
 
 	// Print the response.
 	fmt.Printf("Successfully submitted transaction!\nTransaction ID: %v\n", status.ID)
+
+	// Wait for user input to exit.
+	fmt.Println("Press \"Enter\" to exit.")
+	fmt.Scanln()
 }

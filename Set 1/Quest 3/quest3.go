@@ -11,9 +11,10 @@ import (
 )
 
 func main() {
-	// Enter your quest account secret key below.
-	secret := "SAGXUH5I7IMSDT6RLCF7HSP4UISLYTF6FVAYLTRYX6KSNLJQN266JHPK"
-	// ..........................................
+	// Get the secret key from user input.
+	var secret string
+	fmt.Printf("Please enter your secret key: ")
+	fmt.Scanln(&secret)
 
 	// Get the keypair of the quest account from the secret key.
 	questAccount, _ := keypair.Parse(secret)
@@ -60,4 +61,8 @@ func main() {
 
 	// Print the response.
 	fmt.Printf("Successfully submitted transaction!\nTransaction ID: %v\n", status.ID)
+
+	// Wait for user input to exit.
+	fmt.Println("Press \"Enter\" to exit.")
+	fmt.Scanln()
 }
