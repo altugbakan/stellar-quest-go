@@ -11,6 +11,9 @@ import (
 )
 
 func main() {
+	// Inform the user.
+	fmt.Println("Please wait up to 2 minutes if you solved Quest 4 using the previous solution.")
+
 	// Ask user for secret key and balanceID input.
 	var secret, balanceID string
 	fmt.Printf("Please enter your secret key: ")
