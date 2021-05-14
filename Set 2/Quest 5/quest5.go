@@ -11,9 +11,6 @@ import (
 )
 
 func main() {
-	// If you used the Quest 4 code to solve the question, you must wait
-	// 3.5 days or create a new claimable balance to solve the question.
-
 	// Ask user for secret key and balanceID input.
 	var secret, balanceID string
 	fmt.Printf("Please enter your secret key: ")

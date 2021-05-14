@@ -28,7 +28,7 @@ func main() {
 	}
 
 	// Create the condition.
-	predicate := txnbuild.NotPredicate(txnbuild.BeforeRelativeTimePredicate(302400))
+	predicate := txnbuild.NotPredicate(txnbuild.BeforeAbsoluteTimePredicate(1609113600))
 
 	// Build a create claimable balance operation.
 	op := txnbuild.CreateClaimableBalance{
