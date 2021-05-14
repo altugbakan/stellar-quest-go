@@ -28,7 +28,7 @@ func main() {
 	}
 
 	// Create the condition.
-	predicate := txnbuild.NotPredicate(txnbuild.BeforeAbsoluteTimePredicate(1609113600))
+	predicate := txnbuild.NotPredicate(txnbuild.BeforeRelativeTimePredicate(120))
 
 	// Build a create claimable balance operation.
 	op := txnbuild.CreateClaimableBalance{
@@ -69,7 +69,7 @@ func main() {
 	// Print the response.
 	fmt.Printf("Successfully submitted transaction!\nTransaction ID: %v\n", status.ID)
 
-	// Wait for user input to exit.
-	fmt.Println("Press \"Enter\" to exit.")
+	// Inform the user and wait for user input to exit.
+	fmt.Println("A claimable balance is created to be claimed after 2 minutes.\nPress \"Enter\" to exit.")
 	fmt.Scanln()
 }
