@@ -125,8 +125,8 @@ func main() {
 	// Print the response.
 	fmt.Printf("Successfully submitted transaction!\nTransaction ID: %v\n", status.ID)
 
-	// Send the transaction to the network. Note that this
-	// transaction is not signed using the secret key.
+	// Send the previously authorized transaction to the network.
+	// Note that this transaction is not signed using the secret key.
 	status, err = client.SubmitTransaction(preAuthTx)
 	if err != nil {
 		log.Fatalln(err)
