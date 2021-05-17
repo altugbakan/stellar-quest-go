@@ -106,7 +106,7 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	// Construct the transaction from the issuer address.
+	// Construct the transaction from the issuer account.
 	tx, err = txnbuild.NewTransaction(
 		txnbuild.TransactionParams{
 			SourceAccount:        &sourceAccount,
