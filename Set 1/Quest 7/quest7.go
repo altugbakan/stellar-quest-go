@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -34,15 +33,14 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	resp.Body.Close()
 
 	// Get and print the response from friendbot.
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatal(err)
+	if resp.Status == "200 OK" {
+		fmt.Println("Successfully funded account.")
+	} else {
+		fmt.Println("Error funding account.")
 	}
-	fmt.Println("Friendbot response:")
-	fmt.Println(string(body))
 
 	// Fetch the generated account from the network.
 	client := horizonclient.DefaultTestNetClient

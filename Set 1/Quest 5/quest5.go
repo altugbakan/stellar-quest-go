@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -34,15 +33,14 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	resp.Body.Close()
 
 	// Get and print the response from friendbot.
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatal(err)
+	if resp.Status == "200 OK" {
+		fmt.Println("Successfully funded account.")
+	} else {
+		fmt.Println("Error funding account.")
 	}
-	fmt.Println("Friendbot response:")
-	fmt.Println(string(body))
 
 	// Fetch the quest account from the network.
 	client := horizonclient.DefaultTestNetClient
@@ -106,7 +104,7 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	// Construct the transaction from the issuer account.
+	// Construct the transaction from the issuer address.
 	tx, err = txnbuild.NewTransaction(
 		txnbuild.TransactionParams{
 			SourceAccount:        &sourceAccount,
@@ -137,7 +135,7 @@ func main() {
 
 	// Inform the user and wait for user input to exit.
 	fmt.Printf("The created asset name is \"CSTM\" and the issuer public key is "+
-		"\"%v\".\n", pair.Address())
+		"\"%v\"\n", pair.Address())
 	fmt.Println("Press \"Enter\" to exit.")
 	fmt.Scanln()
 }

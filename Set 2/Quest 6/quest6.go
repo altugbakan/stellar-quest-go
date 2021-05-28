@@ -81,7 +81,7 @@ func main() {
 	fmt.Printf("Successfully submitted transaction!\nTransaction ID: %v\n", status.ID)
 
 	// Inform the user and wait for user input to exit.
-	fmt.Printf("The public key of the account you sponsored is \"%v\".", pair.Address())
+	fmt.Printf("The public key of the account you sponsored is \"%v\".\n", pair.Address())
 	fmt.Println("Press \"Enter\" to exit.")
 	fmt.Scanln()
 }

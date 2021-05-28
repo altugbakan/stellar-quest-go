@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
@@ -29,15 +28,14 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	resp.Body.Close()
 
 	// Get and print the response from friendbot.
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatal(err)
+	if resp.Status == "200 OK" {
+		fmt.Println("Successfully funded account.")
+	} else {
+		fmt.Println("Error funding account.")
 	}
-	resp.Body.Close()
-	fmt.Println("Friendbot response:")
-	fmt.Println(string(body))
 
 	// Fetch the quest account from the network.
 	client := horizonclient.DefaultTestNetClient
@@ -52,7 +50,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	body, err = io.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
