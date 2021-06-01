@@ -87,16 +87,12 @@ func main() {
 		index++
 	}
 
-	// Note that the transaction is split to 2, otherwise
-	// we get "HTTP 414 URI Too Long" error. Check issue
-	// #3621 on stellar/go for more info.
-
-	// Construct the transaction (1/2).
+	// Construct the transaction .
 	tx, err := txnbuild.NewTransaction(
 		txnbuild.TransactionParams{
 			SourceAccount:        &sourceAccount,
 			IncrementSequenceNum: true,
-			Operations:           ops[:len(ops)/2],
+			Operations:           ops,
 			BaseFee:              txnbuild.MinBaseFee,
 			Timebounds:           txnbuild.NewTimeout(300),
 		},
@@ -105,43 +101,14 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	// Sign the transaction (1/2).
+	// Sign the transaction.
 	tx, err = tx.Sign(network.TestNetworkPassphrase, questAccount.(*keypair.Full))
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	// Send the transaction to the network (1/2).
+	// Send the transaction to the network.
 	status, err := client.SubmitTransaction(tx)
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	// Print the response.
-	fmt.Printf("Successfully submitted transaction!\nTransaction ID: %v\n", status.ID)
-
-	// Construct the transaction (2/2).
-	tx, err = txnbuild.NewTransaction(
-		txnbuild.TransactionParams{
-			SourceAccount:        &sourceAccount,
-			IncrementSequenceNum: true,
-			Operations:           ops[len(ops)/2:],
-			BaseFee:              txnbuild.MinBaseFee,
-			Timebounds:           txnbuild.NewTimeout(300),
-		},
-	)
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	// Sign the transaction (2/2).
-	tx, err = tx.Sign(network.TestNetworkPassphrase, questAccount.(*keypair.Full))
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	// Send the transaction to the network (2/2).
-	status, err = client.SubmitTransaction(tx)
 	if err != nil {
 		log.Fatalln(err)
 	}
