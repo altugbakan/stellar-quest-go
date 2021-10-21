@@ -7,4 +7,4 @@ Nervous? [Pop into the official Stellar Quest Discord](https://discord.com/invit
 
 Multisig can be a little tricky to wrap your mind around at first, but it's an important and essential security feature of Stellar baked into the core of the protocol.
 
-\*HINT: when adding multisig use ***setOptions*** but only set ***Signer Type***. Do not touch ***Master Weight*** or any ***Threshold*** settings unless you're sure you know what you're doing.
+\*HINT: when adding multisig use `setOptions` but only set `Signer Type`. Do not touch `Master Weight` or any `Threshold` settings unless you're sure you know what you're doing.

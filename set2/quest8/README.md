@@ -5,7 +5,7 @@ Blockchain database software like IPFS, Torrent or Filecoin can store stuff in a
 
 SEPs, or Stellar Ecosystem Proposals are ecosystem initiatives aimed at providing consensus arount common Stellar use cases. For SEP 1 that's probiding a common format for Stellar account metadata.
 
-In today's challenge your task is to create, host and link to a stellar.toml file with an ***SQ02_EASTER_EGG*** field containing the text:
+In today's challenge your task is to create, host and link to a stellar.toml file with an `SQ02_EASTER_EGG` field containing the text:
 
 ```text
 Log into series 2 of Stellar Quest then visit quest.stellar.org/series2. Finally drag and drop your Stellar Quest series 2 badge PNG images onto the screen. Enjoy!
