@@ -53,8 +53,12 @@ func main() {
 	}
 
 	// Build a change trust operation.
+	changeTrustAsset, err := asset.ToChangeTrustAsset()
 	op := txnbuild.ChangeTrust{
-		Line: asset,
+		Line: changeTrustAsset,
+	}
+	if err != nil {
+		log.Fatalln(err)
 	}
 
 	// Construct the transaction.

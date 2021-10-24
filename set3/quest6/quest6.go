@@ -45,12 +45,13 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	// Note that getting the image from the provided link caused
+	// Note that getting the image from the provided link causes
 	// a difference in image metadata due to Cloudflare polish.
 	// Using the image uploaded to GitHub solves this issue.
 
 	// Get the base64 encoding of the image.
-	resp, err = http.Get("https://raw.githubusercontent.com/altugbakan/stellar-quest-go/main/Set%203/Quest%206/NFT.png")
+	resp, err = http.Get("https://raw.githubusercontent.com/" +
+		"altugbakan/stellar-quest-go/main/set3/quest6/NFT.png")
 	if err != nil {
 		log.Fatal(err)
 	}

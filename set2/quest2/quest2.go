@@ -57,9 +57,13 @@ func main() {
 	}
 
 	// Build a change trust operation.
+	changeTrustAsset, err := asset.ToChangeTrustAsset()
 	trustOp := txnbuild.ChangeTrust{
-		Line:  asset,
+		Line:  changeTrustAsset,
 		Limit: "100",
+	}
+	if err != nil {
+		log.Fatalln(err)
 	}
 
 	// Build a payment operation.

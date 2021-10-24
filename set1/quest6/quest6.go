@@ -19,7 +19,7 @@ func main() {
 	fmt.Printf("Please enter the name of the asset you created in Quest 5: ")
 	fmt.Scanln(&assetName)
 	fmt.Printf("Please enter the public key of the issuer address of the" +
-		"asset you created on Quest 5: ")
+		" asset you created on Quest 5: ")
 	fmt.Scanln(&issuerAddress)
 
 	// Get the keypair of the quest account from the secret key.
