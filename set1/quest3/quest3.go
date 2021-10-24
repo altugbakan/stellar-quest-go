@@ -27,7 +27,7 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	// Build a Manage Data operation to create Key "Hello" and Value "World".
+	// Build a manage data operation to create Key "Hello" and Value "World".
 	op := txnbuild.ManageData{
 		Name:  "Hello",
 		Value: []byte("World"),

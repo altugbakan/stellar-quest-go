@@ -79,11 +79,8 @@ func main() {
 
 		// Append the operation.
 		ops = append(ops, &txnbuild.ManageData{
-			Name: fmt.Sprintf("%02d", index) + string(name),
-			// Not double casting the value byte array causes the
-			// transmission to send the same value string for each key.
-			// Not sure about the reason.
-			Value: []byte(string(value)),
+			Name:  fmt.Sprintf("%02d", index) + string(name),
+			Value: append([]byte(nil), value...),
 		})
 		index++
 	}

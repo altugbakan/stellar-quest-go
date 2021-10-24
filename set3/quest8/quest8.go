@@ -169,8 +169,8 @@ func main() {
 	fmt.Printf("Submitted KYC. Account ID: %s\n", id)
 
 	// Send the SEP-0006 request to deposit MULT to the quest account.
-	req, err = http.NewRequest("GET", "https://testanchor.stellar.org/sep6/deposit?asset_code="+asset.Code+
-		"&account="+questAccount.Address()+"&type="+"bank_account", nil)
+	req, err = http.NewRequest("GET", "https://testanchor.stellar.org/sep6/deposit?asset_code="+
+		asset.Code+"&account="+questAccount.Address()+"&type="+"bank_account", nil)
 	if err != nil {
 		log.Fatal(err)
 	}
