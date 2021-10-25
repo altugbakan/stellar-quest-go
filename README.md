@@ -4,10 +4,10 @@ Solutions implemented in [Go](https://golang.org/) for [Stellar Quest](https://q
 Check [releases](https://github.com/altugbakan/stellar-quest-go/releases/tag/v1.0) for .exe files.
 
 ## Usage
-Download the [.exe files](https://github.com/altugbakan/stellar-quest-go/releases/tag/v1.0) or run the code using `go run ./series[series_number]/quest[quest_number]` from terminal. Enter your private testnet key obtained from the quest and your quest will be automatically completed.
+Run the code using `go run ./series[series_number]/quest[quest_number]` from terminal. Enter your private testnet key obtained from the quest and your quest will be automatically completed.
 
 ## Build
-The project is built using go 1.16.
+The project is built using Go 1.16.
 
 ## Donations
 Thank you for donating!
