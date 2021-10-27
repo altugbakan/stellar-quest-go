@@ -47,7 +47,7 @@ func main() {
 	ar := horizonclient.AccountRequest{AccountID: questAccount.Address()}
 	sourceAccount, err := client.AccountDetail(ar)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Build a dummy payment operation.
@@ -68,13 +68,13 @@ func main() {
 		},
 	)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Sign the transaction.
 	tx, err = tx.Sign(network.TestNetworkPassphrase, questAccount.(*keypair.Full))
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Wrap the transaction in fee bump.
@@ -86,19 +86,19 @@ func main() {
 		},
 	)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Sign the fee bump transaction.
 	feeTx, err = feeTx.Sign(network.TestNetworkPassphrase, pair)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Send the fee bump transaction to the network.
 	status, err := client.SubmitFeeBumpTransaction(feeTx)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Print the response.

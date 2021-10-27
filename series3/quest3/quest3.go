@@ -42,7 +42,7 @@ func main() {
 	ar := horizonclient.AccountRequest{AccountID: questAccount.Address()}
 	sourceAccount, err := client.AccountDetail(ar)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Convert the given clue to string, then hash it.
@@ -50,7 +50,7 @@ func main() {
 	hash := sha256.Sum256(secretKey)
 	hashAddress, err := strkey.Encode(strkey.VersionByteHashX, hash[:])
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Build a set options operation to add the signer.
@@ -72,19 +72,19 @@ func main() {
 		},
 	)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Sign the transaction.
 	tx, err = tx.Sign(network.TestNetworkPassphrase, questAccount.(*keypair.Full))
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Send the transaction to the network.
 	status, err := client.SubmitTransaction(tx)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Print the response.
@@ -109,19 +109,19 @@ func main() {
 		},
 	)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Sign the transaction with the previously added hash.
 	tx, err = tx.SignHashX(secretKey)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Send the transaction to the network.
 	status, err = client.SubmitTransaction(tx)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Print the response.

@@ -47,7 +47,7 @@ func main() {
 	ar := horizonclient.AccountRequest{AccountID: pair.Address()}
 	sourceAccount, err := client.AccountDetail(ar)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Build a payment creation operation with the source account
@@ -70,19 +70,19 @@ func main() {
 		},
 	)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Sign the transaction with quest account and generated account.
 	tx, err = tx.Sign(network.TestNetworkPassphrase, questAccount.(*keypair.Full), pair)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Send the transaction to the network.
 	status, err := client.SubmitTransaction(tx)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Print the response.

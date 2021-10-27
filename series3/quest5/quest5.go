@@ -61,14 +61,14 @@ func main() {
 	ar := horizonclient.AccountRequest{AccountID: questAccount.Address()}
 	issuerAccount, err := client.AccountDetail(ar)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Fetch the generated account from the network.
 	ar = horizonclient.AccountRequest{AccountID: pair.Address()}
 	generatedAccount, err := client.AccountDetail(ar)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Build a set options operation to allow clawbacks from the issuer.
@@ -88,19 +88,19 @@ func main() {
 		},
 	)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Sign the transaction.
 	tx, err = tx.Sign(network.TestNetworkPassphrase, questAccount.(*keypair.Full))
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Send the transaction to the network.
 	status, err := client.SubmitTransaction(tx)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Print the response.
@@ -119,7 +119,7 @@ func main() {
 		Line: changeTrustAsset,
 	}
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Construct the transaction from the generated account.
@@ -133,19 +133,19 @@ func main() {
 		},
 	)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Sign the transaction.
 	tx, err = tx.Sign(network.TestNetworkPassphrase, pair)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Send the transaction to the network.
 	status, err = client.SubmitTransaction(tx)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Print the response.
@@ -169,19 +169,19 @@ func main() {
 		},
 	)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Sign the transaction.
 	tx, err = tx.Sign(network.TestNetworkPassphrase, questAccount.(*keypair.Full))
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Send the transaction to the network.
 	status, err = client.SubmitTransaction(tx)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Print the response.
@@ -205,19 +205,19 @@ func main() {
 		},
 	)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Sign the transaction.
 	tx, err = tx.Sign(network.TestNetworkPassphrase, questAccount.(*keypair.Full))
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Send the transaction to the network.
 	status, err = client.SubmitTransaction(tx)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Print the response.

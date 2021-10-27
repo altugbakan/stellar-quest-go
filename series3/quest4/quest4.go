@@ -40,7 +40,7 @@ func main() {
 	ar := horizonclient.AccountRequest{AccountID: questAccount.Address()}
 	sourceAccount, err := client.AccountDetail(ar)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Build a dummy payment operation.
@@ -54,7 +54,7 @@ func main() {
 	// will be used in the future, requiring a new sequence number.
 	sequenceNumber, err := sourceAccount.GetSequenceNumber()
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 	sourceAccount.Sequence = fmt.Sprintf("%d", sequenceNumber+1)
 
@@ -69,17 +69,17 @@ func main() {
 		},
 	)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Get the hash and base64 XDR of the pre-authorized transaction.
 	txHash, err := preAuthTx.Hash(network.TestNetworkPassphrase)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 	hashAddress, err := strkey.Encode(strkey.VersionByteHashTx, txHash[:])
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Construct a set options operation to add the pre-authorized
@@ -105,19 +105,19 @@ func main() {
 		},
 	)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Sign the transaction.
 	tx, err = tx.Sign(network.TestNetworkPassphrase, questAccount.(*keypair.Full))
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Send the transaction to the network.
 	status, err := client.SubmitTransaction(tx)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Print the response.
@@ -127,7 +127,7 @@ func main() {
 	// Note that this transaction is not signed using the secret key.
 	status, err = client.SubmitTransaction(preAuthTx)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Print the response.

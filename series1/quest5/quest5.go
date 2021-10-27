@@ -47,7 +47,7 @@ func main() {
 	ar := horizonclient.AccountRequest{AccountID: questAccount.Address()}
 	sourceAccount, err := client.AccountDetail(ar)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Create the asset
@@ -62,7 +62,7 @@ func main() {
 		Line: changeTrustAsset,
 	}
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Construct the transaction.
@@ -76,19 +76,19 @@ func main() {
 		},
 	)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Sign the transaction.
 	tx, err = tx.Sign(network.TestNetworkPassphrase, questAccount.(*keypair.Full))
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Send the transaction to the network.
 	status, err := client.SubmitTransaction(tx)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Print the response.
@@ -105,7 +105,7 @@ func main() {
 	ar = horizonclient.AccountRequest{AccountID: pair.Address()}
 	sourceAccount, err = client.AccountDetail(ar)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Construct the transaction from the issuer address.
@@ -119,19 +119,19 @@ func main() {
 		},
 	)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Sign the transaction.
 	tx, err = tx.Sign(network.TestNetworkPassphrase, pair)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Send the transaction to the network.
 	status, err = client.SubmitTransaction(tx)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 
 	// Print the response.
