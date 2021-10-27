@@ -1,11 +1,8 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"io"
 	"log"
-	"net/http"
 
 	"github.com/stellar/go/clients/horizonclient"
 	"github.com/stellar/go/keypair"
@@ -33,24 +30,9 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	// Get the data from the network.
-	resp, err := http.Get("https://horizon-testnet.stellar.org/accounts/" + questAccount.Address())
-	if err != nil {
-		log.Fatal(err)
-	}
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
-	resp.Body.Close()
-
-	// Parse the response.
-	var response map[string]map[string]string
-	json.Unmarshal(body, &response)
-
 	// Build manage data operations.
 	var ops []txnbuild.Operation
-	for data := range response["data"] {
+	for data := range sourceAccount.Data {
 		ops = append(ops, &txnbuild.ManageData{
 			Name: data,
 		})
