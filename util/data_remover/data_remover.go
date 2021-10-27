@@ -17,10 +17,7 @@ func main() {
 	fmt.Scanln(&secret)
 
 	// Get the keypair of the quest account from the secret key.
-	questAccount, err := keypair.Parse(secret)
-	if err != nil {
-		log.Fatal(err)
-	}
+	questAccount, _ := keypair.Parse(secret)
 
 	// Fetch the account from the network.
 	client := horizonclient.DefaultTestNetClient

@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/stellar/go/keypair"
 )
@@ -14,10 +13,7 @@ func main() {
 	fmt.Scanln(&secret)
 
 	// Get the keypair of the quest account from the secret key.
-	questAccount, err := keypair.Parse(secret)
-	if err != nil {
-		log.Fatal(err)
-	}
+	questAccount, _ := keypair.Parse(secret)
 
 	// Print the public key.
 	fmt.Printf("Your public key is %v\n", questAccount.Address())
