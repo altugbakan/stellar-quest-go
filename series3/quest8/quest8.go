@@ -22,7 +22,10 @@ func main() {
 	fmt.Scanln(&secret)
 
 	// Get the keypair of the quest account from the secret key.
-	questAccount, _ := keypair.Parse(secret)
+	questAccount, err := keypair.ParseFull(secret)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// Fund and create the quest account.
 	resp, err := http.Get("https://friendbot.stellar.org/?addr=" + questAccount.Address())
@@ -76,7 +79,7 @@ func main() {
 	}
 
 	// Sign the transaction.
-	tx, err = tx.Sign(network.TestNetworkPassphrase, questAccount.(*keypair.Full))
+	tx, err = tx.Sign(network.TestNetworkPassphrase, questAccount)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -111,7 +114,7 @@ func main() {
 		log.Fatal(err)
 	}
 	respTx, _ := respTxGeneric.Transaction()
-	signedTx, err := respTx.Sign(network.TestNetworkPassphrase, questAccount.(*keypair.Full))
+	signedTx, err := respTx.Sign(network.TestNetworkPassphrase, questAccount)
 	if err != nil {
 		log.Fatal(err)
 	}

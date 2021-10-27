@@ -22,7 +22,10 @@ func main() {
 	fmt.Scanln(&balanceID)
 
 	// Get the keypair of the quest account from the secret key.
-	questAccount, _ := keypair.Parse(secret)
+	questAccount, err := keypair.ParseFull(secret)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// Fetch the quest account from the network.
 	client := horizonclient.DefaultTestNetClient
@@ -66,7 +69,7 @@ func main() {
 	}
 
 	// Sign the transaction.
-	tx, err = tx.Sign(network.TestNetworkPassphrase, questAccount.(*keypair.Full))
+	tx, err = tx.Sign(network.TestNetworkPassphrase, questAccount)
 	if err != nil {
 		log.Fatal(err)
 	}

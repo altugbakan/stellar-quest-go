@@ -49,7 +49,10 @@ func main() {
 	}
 
 	// Get the keypair of the quest account from the secret key.
-	questAccount, _ := keypair.Parse(secret)
+	questAccount, err := keypair.ParseFull(secret)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// Build an account creation operation.
 	op := txnbuild.CreateAccount{

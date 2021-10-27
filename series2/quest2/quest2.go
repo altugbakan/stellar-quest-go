@@ -18,7 +18,10 @@ func main() {
 	fmt.Scanln(&secret)
 
 	// Get the keypair of the quest account from the secret key.
-	questAccount, _ := keypair.Parse(secret)
+	questAccount, err := keypair.ParseFull(secret)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	// Generate a random testnet account.
 	pair, err := keypair.Random()
@@ -89,7 +92,7 @@ func main() {
 	}
 
 	// Sign the transaction with both keys.
-	tx, err = tx.Sign(network.TestNetworkPassphrase, questAccount.(*keypair.Full), pair)
+	tx, err = tx.Sign(network.TestNetworkPassphrase, questAccount, pair)
 	if err != nil {
 		log.Fatal(err)
 	}
