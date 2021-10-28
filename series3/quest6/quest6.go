@@ -26,7 +26,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// Fund and create the quest account.
+	// Fund the quest account.
 	resp, err := http.Get("https://friendbot.stellar.org/?addr=" + questAccount.Address())
 	if err != nil {
 		log.Fatal(err)
@@ -54,7 +54,7 @@ func main() {
 
 	// Get the base64 encoding of the image.
 	resp, err = http.Get("https://raw.githubusercontent.com/" +
-		"altugbakan/stellar-quest-go/main/set3/quest6/NFT.png")
+		"altugbakan/stellar-quest-go/main/series3/quest6/NFT.png")
 	if err != nil {
 		log.Fatal(err)
 	}
