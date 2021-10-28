@@ -18,13 +18,13 @@ func main() {
 	fmt.Scanln(&secret)
 
 	// Get the keypair of the quest account from the secret key.
-	questAccount, err := keypair.ParseFull(secret)
+	questKp, err := keypair.ParseFull(secret)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Fund the quest account.
-	resp, err := http.Get("https://friendbot.stellar.org/?addr=" + questAccount.Address())
+	resp, err := http.Get("https://friendbot.stellar.org/?addr=" + questKp.Address())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -39,8 +39,9 @@ func main() {
 
 	// Fetch the quest account from the network.
 	client := horizonclient.DefaultTestNetClient
-	ar := horizonclient.AccountRequest{AccountID: questAccount.Address()}
-	sourceAccount, err := client.AccountDetail(ar)
+	questAccount, err := client.AccountDetail(horizonclient.AccountRequest{
+		AccountID: questKp.Address(),
+	})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -49,7 +50,7 @@ func main() {
 	var ops []txnbuild.Operation
 	for i := 0; i < 100; i++ {
 		ops = append(ops, &txnbuild.Payment{
-			Destination: questAccount.Address(),
+			Destination: questKp.Address(),
 			Amount:      "0.01",
 			Asset:       txnbuild.NativeAsset{},
 		})
@@ -58,7 +59,7 @@ func main() {
 	// Construct a transaction with 100 operations.
 	tx, err := txnbuild.NewTransaction(
 		txnbuild.TransactionParams{
-			SourceAccount:        &sourceAccount,
+			SourceAccount:        &questAccount,
 			IncrementSequenceNum: true,
 			Operations:           ops,
 			BaseFee:              txnbuild.MinBaseFee,
@@ -70,7 +71,7 @@ func main() {
 	}
 
 	// Sign the transaction.
-	tx, err = tx.Sign(network.TestNetworkPassphrase, questAccount)
+	tx, err = tx.Sign(network.TestNetworkPassphrase, questKp)
 	if err != nil {
 		log.Fatal(err)
 	}

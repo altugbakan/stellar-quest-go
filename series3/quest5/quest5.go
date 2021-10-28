@@ -18,21 +18,21 @@ func main() {
 	fmt.Scanln(&secret)
 
 	// Get the keypair of the quest account from the secret key.
-	questAccount, err := keypair.ParseFull(secret)
+	questKp, err := keypair.ParseFull(secret)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Generate a random testnet account.
-	pair, err := keypair.Random()
+	generatedKp, err := keypair.Random()
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("The generated secret key is %v\n", pair.Seed())
-	fmt.Printf("The generated public key is %v\n", pair.Address())
+	fmt.Printf("The generated secret key is %v\n", generatedKp.Seed())
+	fmt.Printf("The generated public key is %v\n", generatedKp.Address())
 
 	// Fund the quest account.
-	resp, err := http.Get("https://friendbot.stellar.org/?addr=" + questAccount.Address())
+	resp, err := http.Get("https://friendbot.stellar.org/?addr=" + questKp.Address())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -46,7 +46,7 @@ func main() {
 	}
 
 	// Fund the generated account.
-	resp, err = http.Get("https://friendbot.stellar.org/?addr=" + pair.Address())
+	resp, err = http.Get("https://friendbot.stellar.org/?addr=" + generatedKp.Address())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -61,15 +61,17 @@ func main() {
 
 	// Fetch the quest account from the network.
 	client := horizonclient.DefaultTestNetClient
-	ar := horizonclient.AccountRequest{AccountID: questAccount.Address()}
-	issuerAccount, err := client.AccountDetail(ar)
+	questAccount, err := client.AccountDetail(horizonclient.AccountRequest{
+		AccountID: questKp.Address(),
+	})
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Fetch the generated account from the network.
-	ar = horizonclient.AccountRequest{AccountID: pair.Address()}
-	generatedAccount, err := client.AccountDetail(ar)
+	generatedAccount, err := client.AccountDetail(horizonclient.AccountRequest{
+		AccountID: generatedKp.Address(),
+	})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -83,7 +85,7 @@ func main() {
 	// Construct the transaction from the issuer account.
 	tx, err := txnbuild.NewTransaction(
 		txnbuild.TransactionParams{
-			SourceAccount:        &issuerAccount,
+			SourceAccount:        &questAccount,
 			IncrementSequenceNum: true,
 			Operations:           []txnbuild.Operation{&allowOp},
 			BaseFee:              txnbuild.MinBaseFee,
@@ -95,7 +97,7 @@ func main() {
 	}
 
 	// Sign the transaction.
-	tx, err = tx.Sign(network.TestNetworkPassphrase, questAccount)
+	tx, err = tx.Sign(network.TestNetworkPassphrase, questKp)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -113,7 +115,7 @@ func main() {
 	asset := txnbuild.CreditAsset{
 		// The asset code was hidden in the hint.
 		Code:   "MariusLenk",
-		Issuer: questAccount.Address(),
+		Issuer: questKp.Address(),
 	}
 
 	// Build a change trust operation to allow assets from the issuer.
@@ -140,7 +142,7 @@ func main() {
 	}
 
 	// Sign the transaction.
-	tx, err = tx.Sign(network.TestNetworkPassphrase, pair)
+	tx, err = tx.Sign(network.TestNetworkPassphrase, generatedKp)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -156,7 +158,7 @@ func main() {
 
 	// Build a payment operation.
 	paymentOp := txnbuild.Payment{
-		Destination: pair.Address(),
+		Destination: generatedKp.Address(),
 		Amount:      "100",
 		Asset:       asset,
 	}
@@ -164,7 +166,7 @@ func main() {
 	// Construct the transaction from the issuer account.
 	tx, err = txnbuild.NewTransaction(
 		txnbuild.TransactionParams{
-			SourceAccount:        &issuerAccount,
+			SourceAccount:        &questAccount,
 			IncrementSequenceNum: true,
 			Operations:           []txnbuild.Operation{&paymentOp},
 			BaseFee:              txnbuild.MinBaseFee,
@@ -176,7 +178,7 @@ func main() {
 	}
 
 	// Sign the transaction.
-	tx, err = tx.Sign(network.TestNetworkPassphrase, questAccount)
+	tx, err = tx.Sign(network.TestNetworkPassphrase, questKp)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -192,7 +194,7 @@ func main() {
 
 	// Build a clawback operation.
 	clawbackOp := txnbuild.Clawback{
-		From:   pair.Address(),
+		From:   generatedKp.Address(),
 		Amount: "50",
 		Asset:  asset,
 	}
@@ -200,7 +202,7 @@ func main() {
 	// Construct the transaction from the issuer account.
 	tx, err = txnbuild.NewTransaction(
 		txnbuild.TransactionParams{
-			SourceAccount:        &issuerAccount,
+			SourceAccount:        &questAccount,
 			IncrementSequenceNum: true,
 			Operations:           []txnbuild.Operation{&clawbackOp},
 			BaseFee:              txnbuild.MinBaseFee,
@@ -212,7 +214,7 @@ func main() {
 	}
 
 	// Sign the transaction.
-	tx, err = tx.Sign(network.TestNetworkPassphrase, questAccount)
+	tx, err = tx.Sign(network.TestNetworkPassphrase, questKp)
 	if err != nil {
 		log.Fatal(err)
 	}

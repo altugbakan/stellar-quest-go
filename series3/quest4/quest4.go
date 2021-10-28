@@ -19,13 +19,13 @@ func main() {
 	fmt.Scanln(&secret)
 
 	// Get the keypair of the quest account from the secret key.
-	questAccount, err := keypair.ParseFull(secret)
+	questKp, err := keypair.ParseFull(secret)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Fund the quest account.
-	resp, err := http.Get("https://friendbot.stellar.org/?addr=" + questAccount.Address())
+	resp, err := http.Get("https://friendbot.stellar.org/?addr=" + questKp.Address())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -40,31 +40,32 @@ func main() {
 
 	// Fetch the quest account from the network.
 	client := horizonclient.DefaultTestNetClient
-	ar := horizonclient.AccountRequest{AccountID: questAccount.Address()}
-	sourceAccount, err := client.AccountDetail(ar)
+	questAccount, err := client.AccountDetail(horizonclient.AccountRequest{
+		AccountID: questKp.Address(),
+	})
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Build a dummy payment operation.
 	dummyOp := txnbuild.Payment{
-		Destination: questAccount.Address(),
+		Destination: questKp.Address(),
 		Amount:      "0.1",
 		Asset:       txnbuild.NativeAsset{},
 	}
 
 	// Increment the source account's sequence, as the pre-authorized transaction
 	// will be used in the future, requiring a new sequence number.
-	sequenceNumber, err := sourceAccount.GetSequenceNumber()
+	sequenceNumber, err := questAccount.GetSequenceNumber()
 	if err != nil {
 		log.Fatal(err)
 	}
-	sourceAccount.Sequence = fmt.Sprintf("%d", sequenceNumber+1)
+	questAccount.IncrementSequenceNumber()
 
 	// Construct the pre-authorized transaction.
 	preAuthTx, err := txnbuild.NewTransaction(
 		txnbuild.TransactionParams{
-			SourceAccount:        &sourceAccount,
+			SourceAccount:        &questAccount,
 			IncrementSequenceNum: true,
 			Operations:           []txnbuild.Operation{&dummyOp},
 			BaseFee:              txnbuild.MinBaseFee,
@@ -95,12 +96,12 @@ func main() {
 	}
 
 	// Revert the source account's sequence to normal.
-	sourceAccount.Sequence = fmt.Sprintf("%d", sequenceNumber)
+	questAccount.Sequence = fmt.Sprintf("%d", sequenceNumber)
 
 	// Construct the transaction.
 	tx, err := txnbuild.NewTransaction(
 		txnbuild.TransactionParams{
-			SourceAccount:        &sourceAccount,
+			SourceAccount:        &questAccount,
 			IncrementSequenceNum: true,
 			Operations:           []txnbuild.Operation{&authOp},
 			BaseFee:              txnbuild.MinBaseFee,
@@ -112,7 +113,7 @@ func main() {
 	}
 
 	// Sign the transaction.
-	tx, err = tx.Sign(network.TestNetworkPassphrase, questAccount)
+	tx, err = tx.Sign(network.TestNetworkPassphrase, questKp)
 	if err != nil {
 		log.Fatal(err)
 	}

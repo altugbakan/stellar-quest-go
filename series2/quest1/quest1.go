@@ -18,16 +18,22 @@ func main() {
 	fmt.Printf("Please enter your secret key: ")
 	fmt.Scanln(&secret)
 
-	// Generate a random testnet account.
-	pair, err := keypair.Random()
+	// Get the keypair of the quest account from the secret key.
+	questKp, err := keypair.ParseFull(secret)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("The generated secret key is %v\n", pair.Seed())
-	fmt.Printf("The generated public key is %v\n", pair.Address())
+
+	// Generate a random testnet account.
+	generatedKp, err := keypair.Random()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("The generated secret key is %v\n", generatedKp.Seed())
+	fmt.Printf("The generated public key is %v\n", generatedKp.Address())
 
 	// Fund the generated account.
-	resp, err := http.Get("https://friendbot.stellar.org/?addr=" + pair.Address())
+	resp, err := http.Get("https://friendbot.stellar.org/?addr=" + generatedKp.Address())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -42,21 +48,16 @@ func main() {
 
 	// Fetch the account from the network.
 	client := horizonclient.DefaultTestNetClient
-	ar := horizonclient.AccountRequest{AccountID: pair.Address()}
-	sourceAccount, err := client.AccountDetail(ar)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Get the keypair of the quest account from the secret key.
-	questAccount, err := keypair.ParseFull(secret)
+	generatedAccount, err := client.AccountDetail(horizonclient.AccountRequest{
+		AccountID: generatedKp.Address(),
+	})
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Build an account creation operation.
 	op := txnbuild.CreateAccount{
-		Destination: questAccount.Address(),
+		Destination: questKp.Address(),
 		Amount:      "5000",
 	}
 
@@ -66,7 +67,7 @@ func main() {
 	// Construct the transaction.
 	tx, err := txnbuild.NewTransaction(
 		txnbuild.TransactionParams{
-			SourceAccount:        &sourceAccount,
+			SourceAccount:        &generatedAccount,
 			IncrementSequenceNum: true,
 			Operations:           []txnbuild.Operation{&op},
 			BaseFee:              txnbuild.MinBaseFee,
@@ -79,7 +80,7 @@ func main() {
 	}
 
 	// Sign the transaction.
-	tx, err = tx.Sign(network.TestNetworkPassphrase, pair)
+	tx, err = tx.Sign(network.TestNetworkPassphrase, generatedKp)
 	if err != nil {
 		log.Fatal(err)
 	}

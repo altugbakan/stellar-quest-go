@@ -19,21 +19,21 @@ func main() {
 	fmt.Scanln(&secret)
 
 	// Get the keypair of the quest account from the secret key.
-	kp, err := keypair.ParseFull(secret)
+	questKp, err := keypair.ParseFull(secret)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Generate a random testnet account.
-	pair, err := keypair.Random()
+	generatedKp, err := keypair.Random()
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("The generated secret key is %v\n", pair.Seed())
-	fmt.Printf("The generated public key is %v\n", pair.Address())
+	fmt.Printf("The generated secret key is %v\n", generatedKp.Seed())
+	fmt.Printf("The generated public key is %v\n", generatedKp.Address())
 
 	// Fund the generated account.
-	resp, err := http.Get("https://friendbot.stellar.org/?addr=" + pair.Address())
+	resp, err := http.Get("https://friendbot.stellar.org/?addr=" + generatedKp.Address())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -48,23 +48,25 @@ func main() {
 
 	// Fetch the account from the network.
 	client := horizonclient.DefaultTestNetClient
-	ar := horizonclient.AccountRequest{AccountID: kp.Address()}
-	account, err := client.AccountDetail(ar)
+	questAccount, err := client.AccountDetail(horizonclient.AccountRequest{
+		AccountID: questKp.Address(),
+	})
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Build manage data operations to delete all data.
 	var ops []txnbuild.Operation
-	for data := range account.Data {
+	for data := range questAccount.Data {
 		ops = append(ops, &txnbuild.ManageData{
 			Name: data,
 		})
 	}
 
 	// Get the offers created by the account.
-	or := horizonclient.OfferRequest{ForAccount: kp.Address()}
-	offers, err := client.Offers(or)
+	offers, err := client.Offers(horizonclient.OfferRequest{
+		ForAccount: questKp.Address(),
+	})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -79,7 +81,7 @@ func main() {
 	}
 
 	// Build change trust operations to delete all trustlines.
-	for _, balance := range account.Balances {
+	for _, balance := range questAccount.Balances {
 		if balance.Asset.Type != "native" {
 			// Send the asset back to the issuer.
 			asset := txnbuild.CreditAsset{
@@ -111,13 +113,13 @@ func main() {
 
 	// Build an account merge operation.
 	ops = append(ops, &txnbuild.AccountMerge{
-		Destination: pair.Address(),
+		Destination: generatedKp.Address(),
 	})
 
 	// Construct the transaction.
 	tx, err := txnbuild.NewTransaction(
 		txnbuild.TransactionParams{
-			SourceAccount:        &account,
+			SourceAccount:        &questAccount,
 			IncrementSequenceNum: true,
 			Operations:           ops,
 			BaseFee:              txnbuild.MinBaseFee,
@@ -129,7 +131,7 @@ func main() {
 	}
 
 	// Sign the transaction.
-	tx, err = tx.Sign(network.TestNetworkPassphrase, kp)
+	tx, err = tx.Sign(network.TestNetworkPassphrase, questKp)
 	if err != nil {
 		log.Fatal(err)
 	}

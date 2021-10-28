@@ -13,33 +13,36 @@ import (
 func main() {
 	// Get the secret key, asset name and the issuer address
 	// created on Quest 5 below from user input.
-	var secret, assetName, issuerAddress string
+	var secret string
 	fmt.Printf("Please enter your secret key: ")
 	fmt.Scanln(&secret)
-	fmt.Printf("Please enter the name of the asset you created in Quest 5: ")
-	fmt.Scanln(&assetName)
-	fmt.Printf("Please enter the public key of the issuer address of the" +
-		" asset you created on Quest 5: ")
-	fmt.Scanln(&issuerAddress)
 
 	// Get the keypair of the quest account from the secret key.
-	questAccount, err := keypair.ParseFull(secret)
+	questKp, err := keypair.ParseFull(secret)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Fetch the quest account from the network.
 	client := horizonclient.DefaultTestNetClient
-	ar := horizonclient.AccountRequest{AccountID: questAccount.Address()}
-	sourceAccount, err := client.AccountDetail(ar)
+	questAccount, err := client.AccountDetail(horizonclient.AccountRequest{
+		AccountID: questKp.Address(),
+	})
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// Create the asset.
-	asset := txnbuild.CreditAsset{
-		Code:   assetName,
-		Issuer: issuerAddress,
+	// Get a custom asset from the quest account, any will work.
+	var asset txnbuild.CreditAsset
+	for _, balance := range questAccount.Balances {
+		if balance.Asset.Type != "native" {
+			asset.Code = balance.Asset.Code
+			asset.Issuer = balance.Asset.Issuer
+			break
+		}
+	}
+	if asset.Code == "" {
+		log.Fatal("no custom asset found")
 	}
 
 	// Build a sell offer operation.
@@ -53,7 +56,7 @@ func main() {
 	// Construct the transaction.
 	tx, err := txnbuild.NewTransaction(
 		txnbuild.TransactionParams{
-			SourceAccount:        &sourceAccount,
+			SourceAccount:        &questAccount,
 			IncrementSequenceNum: true,
 			Operations:           []txnbuild.Operation{&op},
 			BaseFee:              txnbuild.MinBaseFee,
@@ -65,7 +68,7 @@ func main() {
 	}
 
 	// Sign the transaction.
-	tx, err = tx.Sign(network.TestNetworkPassphrase, questAccount)
+	tx, err = tx.Sign(network.TestNetworkPassphrase, questKp)
 	if err != nil {
 		log.Fatal(err)
 	}

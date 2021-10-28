@@ -14,50 +14,58 @@ func main() {
 	// Inform the user.
 	fmt.Println("Please wait up to 2 minutes if you solved Quest 4 using the previous solution.")
 
-	// Ask user for secret key and balanceID input.
-	var secret, balanceID string
+	// Ask user for secret key input.
+	var secret string
 	fmt.Printf("Please enter your secret key: ")
 	fmt.Scanln(&secret)
-	fmt.Printf("Please enter a balance ID if needed (Press \"Enter\" to skip): ")
-	fmt.Scanln(&balanceID)
 
 	// Get the keypair of the quest account from the secret key.
-	questAccount, err := keypair.ParseFull(secret)
+	questKp, err := keypair.ParseFull(secret)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Fetch the quest account from the network.
 	client := horizonclient.DefaultTestNetClient
-	ar := horizonclient.AccountRequest{AccountID: questAccount.Address()}
-	sourceAccount, err := client.AccountDetail(ar)
+	questAccount, err := client.AccountDetail(horizonclient.AccountRequest{
+		AccountID: questKp.Address(),
+	})
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// If not supplied, fetch the claimable balance ID.
-	if balanceID == "" {
-		balances, err := client.ClaimableBalances(
-			horizonclient.ClaimableBalanceRequest{
-				Claimant: questAccount.Address(),
-			},
-		)
-		if err != nil {
-			log.Fatal(err)
+	// Fetch the claimable balances of the quest account from the network.
+	claimableBalances, err := client.ClaimableBalances(
+		horizonclient.ClaimableBalanceRequest{
+			Claimant: questKp.Address(),
+		},
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Get a native claimable balance from the quest account, any will work.
+	var balanceID string
+	for _, balance := range claimableBalances.Embedded.Records {
+		if balance.Asset == "native" {
+			balanceID = balance.BalanceID
+			break
 		}
-		balanceID = balances.Embedded.Records[0].BalanceID
+	}
+	if balanceID == "" {
+		log.Fatal("no balances to claim")
 	}
 
 	// Build a claim claimable balance operation.
 	op := txnbuild.ClaimClaimableBalance{
 		BalanceID:     balanceID,
-		SourceAccount: questAccount.Address(),
+		SourceAccount: questKp.Address(),
 	}
 
 	// Construct the transaction with both operations.
 	tx, err := txnbuild.NewTransaction(
 		txnbuild.TransactionParams{
-			SourceAccount:        &sourceAccount,
+			SourceAccount:        &questAccount,
 			IncrementSequenceNum: true,
 			Operations:           []txnbuild.Operation{&op},
 			BaseFee:              txnbuild.MinBaseFee,
@@ -69,7 +77,7 @@ func main() {
 	}
 
 	// Sign the transaction.
-	tx, err = tx.Sign(network.TestNetworkPassphrase, questAccount)
+	tx, err = tx.Sign(network.TestNetworkPassphrase, questKp)
 	if err != nil {
 		log.Fatal(err)
 	}

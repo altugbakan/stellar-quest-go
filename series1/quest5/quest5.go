@@ -18,21 +18,21 @@ func main() {
 	fmt.Scanln(&secret)
 
 	// Get the keypair of the quest account from the secret key.
-	questAccount, err := keypair.ParseFull(secret)
+	questKp, err := keypair.ParseFull(secret)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Generate a random testnet account.
-	pair, err := keypair.Random()
+	generatedKp, err := keypair.Random()
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("The generated secret key is %v\n", pair.Seed())
-	fmt.Printf("The generated public key is %v\n", pair.Address())
+	fmt.Printf("The generated secret key is %v\n", generatedKp.Seed())
+	fmt.Printf("The generated public key is %v\n", generatedKp.Address())
 
 	// Fund the generated account.
-	resp, err := http.Get("https://friendbot.stellar.org/?addr=" + pair.Address())
+	resp, err := http.Get("https://friendbot.stellar.org/?addr=" + generatedKp.Address())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -47,8 +47,9 @@ func main() {
 
 	// Fetch the quest account from the network.
 	client := horizonclient.DefaultTestNetClient
-	ar := horizonclient.AccountRequest{AccountID: questAccount.Address()}
-	sourceAccount, err := client.AccountDetail(ar)
+	questAccount, err := client.AccountDetail(horizonclient.AccountRequest{
+		AccountID: questKp.Address(),
+	})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -56,7 +57,7 @@ func main() {
 	// Create the asset
 	asset := txnbuild.CreditAsset{
 		Code:   "CSTM",
-		Issuer: pair.Address(),
+		Issuer: generatedKp.Address(),
 	}
 
 	// Build a change trust operation.
@@ -71,7 +72,7 @@ func main() {
 	// Construct the transaction.
 	tx, err := txnbuild.NewTransaction(
 		txnbuild.TransactionParams{
-			SourceAccount:        &sourceAccount,
+			SourceAccount:        &questAccount,
 			IncrementSequenceNum: true,
 			Operations:           []txnbuild.Operation{&trustOp},
 			BaseFee:              txnbuild.MinBaseFee,
@@ -83,7 +84,7 @@ func main() {
 	}
 
 	// Sign the transaction.
-	tx, err = tx.Sign(network.TestNetworkPassphrase, questAccount)
+	tx, err = tx.Sign(network.TestNetworkPassphrase, questKp)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -99,14 +100,15 @@ func main() {
 
 	// Build a payment operation.
 	paymentOp := txnbuild.Payment{
-		Destination: questAccount.Address(),
+		Destination: questKp.Address(),
 		Amount:      "1",
 		Asset:       asset,
 	}
 
 	// Fetch the newly created account from the network.
-	ar = horizonclient.AccountRequest{AccountID: pair.Address()}
-	sourceAccount, err = client.AccountDetail(ar)
+	generatedAccount, err := client.AccountDetail(horizonclient.AccountRequest{
+		AccountID: generatedKp.Address(),
+	})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -114,7 +116,7 @@ func main() {
 	// Construct the transaction from the issuer address.
 	tx, err = txnbuild.NewTransaction(
 		txnbuild.TransactionParams{
-			SourceAccount:        &sourceAccount,
+			SourceAccount:        &generatedAccount,
 			IncrementSequenceNum: true,
 			Operations:           []txnbuild.Operation{&paymentOp},
 			BaseFee:              txnbuild.MinBaseFee,
@@ -126,7 +128,7 @@ func main() {
 	}
 
 	// Sign the transaction.
-	tx, err = tx.Sign(network.TestNetworkPassphrase, pair)
+	tx, err = tx.Sign(network.TestNetworkPassphrase, generatedKp)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -141,8 +143,8 @@ func main() {
 	fmt.Printf("Successfully submitted transaction!\nTransaction ID: %v\n", status.ID)
 
 	// Inform the user and wait for user input to exit.
-	fmt.Printf("The created asset name is \"CSTM\" and the issuer public key is "+
-		"\"%v\"\n", pair.Address())
+	fmt.Printf("The created asset name is \"CSTM\" and the issuer is "+
+		"\"%v\"\n", generatedKp.Address())
 	fmt.Println("Press \"Enter\" to exit.")
 	fmt.Scanln()
 }

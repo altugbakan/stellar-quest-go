@@ -12,31 +12,43 @@ import (
 
 func main() {
 	// Ask user for secret key and the account sponsored input.
-	var secret, sponsoredID string
+	var secret string
 	fmt.Printf("Please enter your secret key: ")
 	fmt.Scanln(&secret)
-	fmt.Printf("Please enter the public key of the account you " +
-		"sponsored on Quest 6: ")
-	fmt.Scanln(&sponsoredID)
 
 	// Get the keypair of the quest account from the secret key.
-	questAccount, err := keypair.ParseFull(secret)
+	questKp, err := keypair.ParseFull(secret)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Fetch the quest account from the network.
 	client := horizonclient.DefaultTestNetClient
-	ar := horizonclient.AccountRequest{AccountID: questAccount.Address()}
-	sourceAccount, err := client.AccountDetail(ar)
+	questAccount, err := client.AccountDetail(horizonclient.AccountRequest{
+		AccountID: questKp.Address(),
+	})
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	// Fetch the accounts sponsored by the quest account.
+	sponsoredAccounts, err := client.Accounts(horizonclient.AccountsRequest{
+		Sponsor: questKp.Address(),
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Get a sponsored account, any will work.
+	if len(sponsoredAccounts.Embedded.Records) == 0 {
+		log.Fatal("no sponsored account found")
+	}
+	sponsoredAccount := sponsoredAccounts.Embedded.Records[0].AccountID
+
 	// Build a payment operation to ensure the sponsored account's
 	// balance does not fall below the minimum balance.
 	paymentOp := txnbuild.Payment{
-		Destination: sponsoredID,
+		Destination: sponsoredAccount,
 		Amount:      "5",
 		Asset:       txnbuild.NativeAsset{},
 	}
@@ -44,13 +56,13 @@ func main() {
 	// Build a revoke sponsorship operation.
 	revokeOp := txnbuild.RevokeSponsorship{
 		SponsorshipType: txnbuild.RevokeSponsorshipTypeAccount,
-		Account:         &sponsoredID,
+		Account:         &sponsoredAccount,
 	}
 
 	// Construct the transaction with both operations.
 	tx, err := txnbuild.NewTransaction(
 		txnbuild.TransactionParams{
-			SourceAccount:        &sourceAccount,
+			SourceAccount:        &questAccount,
 			IncrementSequenceNum: true,
 			Operations:           []txnbuild.Operation{&paymentOp, &revokeOp},
 			BaseFee:              txnbuild.MinBaseFee,
@@ -62,7 +74,7 @@ func main() {
 	}
 
 	// Sign the transaction.
-	tx, err = tx.Sign(network.TestNetworkPassphrase, questAccount)
+	tx, err = tx.Sign(network.TestNetworkPassphrase, questKp)
 	if err != nil {
 		log.Fatal(err)
 	}

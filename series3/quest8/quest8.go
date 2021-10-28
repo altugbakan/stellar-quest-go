@@ -22,13 +22,13 @@ func main() {
 	fmt.Scanln(&secret)
 
 	// Get the keypair of the quest account from the secret key.
-	questAccount, err := keypair.ParseFull(secret)
+	questKp, err := keypair.ParseFull(secret)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Fund the quest account.
-	resp, err := http.Get("https://friendbot.stellar.org/?addr=" + questAccount.Address())
+	resp, err := http.Get("https://friendbot.stellar.org/?addr=" + questKp.Address())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -43,8 +43,9 @@ func main() {
 
 	// Fetch the quest account from the network.
 	client := horizonclient.DefaultTestNetClient
-	ar := horizonclient.AccountRequest{AccountID: questAccount.Address()}
-	sourceAccount, err := client.AccountDetail(ar)
+	questAccount, err := client.AccountDetail(horizonclient.AccountRequest{
+		AccountID: questKp.Address(),
+	})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -67,7 +68,7 @@ func main() {
 	// Construct the transaction.
 	tx, err := txnbuild.NewTransaction(
 		txnbuild.TransactionParams{
-			SourceAccount:        &sourceAccount,
+			SourceAccount:        &questAccount,
 			IncrementSequenceNum: true,
 			Operations:           []txnbuild.Operation{&op},
 			BaseFee:              txnbuild.MinBaseFee,
@@ -79,7 +80,7 @@ func main() {
 	}
 
 	// Sign the transaction.
-	tx, err = tx.Sign(network.TestNetworkPassphrase, questAccount)
+	tx, err = tx.Sign(network.TestNetworkPassphrase, questKp)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -94,7 +95,7 @@ func main() {
 	fmt.Printf("Successfully submitted transaction!\nTransaction ID: %v\n", status.ID)
 
 	// Send a SEP-0010 request.
-	resp, err = http.Get("https://testanchor.stellar.org/auth?account=" + questAccount.Address())
+	resp, err = http.Get("https://testanchor.stellar.org/auth?account=" + questKp.Address())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -114,7 +115,7 @@ func main() {
 		log.Fatal(err)
 	}
 	respTx, _ := respTxGeneric.Transaction()
-	signedTx, err := respTx.Sign(network.TestNetworkPassphrase, questAccount)
+	signedTx, err := respTx.Sign(network.TestNetworkPassphrase, questKp)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -122,7 +123,7 @@ func main() {
 
 	// Post the signed transaction to get the SEP-0010 token.
 	body, _ = json.Marshal(map[string]string{"transaction": signedStr})
-	resp, err = http.Post("https://testanchor.stellar.org/auth?account="+questAccount.Address(),
+	resp, err = http.Post("https://testanchor.stellar.org/auth?account="+questKp.Address(),
 		"application/json", bytes.NewBuffer(body))
 	if err != nil {
 		log.Fatal(err)
@@ -140,7 +141,7 @@ func main() {
 
 	// Fill the KYC information.
 	kyc := map[string]string{
-		"account":             questAccount.Address(),
+		"account":             questKp.Address(),
 		"first_name":          "Stellar",
 		"last_name":           "Quest",
 		"email_address":       "quest@stellar.org",
@@ -173,7 +174,7 @@ func main() {
 
 	// Send the SEP-0006 request to deposit MULT to the quest account.
 	req, err = http.NewRequest("GET", "https://testanchor.stellar.org/sep6/deposit?asset_code="+
-		asset.Code+"&account="+questAccount.Address()+"&type="+"bank_account", nil)
+		asset.Code+"&account="+questKp.Address()+"&type="+"bank_account", nil)
 	if err != nil {
 		log.Fatal(err)
 	}

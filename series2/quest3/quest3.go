@@ -18,21 +18,21 @@ func main() {
 	fmt.Scanln(&secret)
 
 	// Get the keypair of the quest account from the secret key.
-	questAccount, err := keypair.ParseFull(secret)
+	questKp, err := keypair.ParseFull(secret)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Generate a random testnet account.
-	pair, err := keypair.Random()
+	generatedKp, err := keypair.Random()
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("The generated secret key is %v\n", pair.Seed())
-	fmt.Printf("The generated public key is %v\n", pair.Address())
+	fmt.Printf("The generated secret key is %v\n", generatedKp.Seed())
+	fmt.Printf("The generated public key is %v\n", generatedKp.Address())
 
 	// Fund the generated account.
-	resp, err := http.Get("https://friendbot.stellar.org/?addr=" + pair.Address())
+	resp, err := http.Get("https://friendbot.stellar.org/?addr=" + generatedKp.Address())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -47,15 +47,16 @@ func main() {
 
 	// Fetch the quest account from the network.
 	client := horizonclient.DefaultTestNetClient
-	ar := horizonclient.AccountRequest{AccountID: questAccount.Address()}
-	sourceAccount, err := client.AccountDetail(ar)
+	questAccount, err := client.AccountDetail(horizonclient.AccountRequest{
+		AccountID: questKp.Address(),
+	})
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Build a dummy payment operation.
 	op := txnbuild.Payment{
-		Destination: questAccount.Address(),
+		Destination: questKp.Address(),
 		Amount:      "1",
 		Asset:       txnbuild.NativeAsset{},
 	}
@@ -63,7 +64,7 @@ func main() {
 	// Construct the transaction with both operations.
 	tx, err := txnbuild.NewTransaction(
 		txnbuild.TransactionParams{
-			SourceAccount:        &sourceAccount,
+			SourceAccount:        &questAccount,
 			IncrementSequenceNum: true,
 			Operations:           []txnbuild.Operation{&op},
 			BaseFee:              txnbuild.MinBaseFee,
@@ -75,7 +76,7 @@ func main() {
 	}
 
 	// Sign the transaction.
-	tx, err = tx.Sign(network.TestNetworkPassphrase, questAccount)
+	tx, err = tx.Sign(network.TestNetworkPassphrase, questKp)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -84,7 +85,7 @@ func main() {
 	feeTx, err := txnbuild.NewFeeBumpTransaction(
 		txnbuild.FeeBumpTransactionParams{
 			Inner:      tx,
-			FeeAccount: pair.Address(),
+			FeeAccount: generatedKp.Address(),
 			BaseFee:    txnbuild.MinBaseFee,
 		},
 	)
@@ -93,7 +94,7 @@ func main() {
 	}
 
 	// Sign the fee bump transaction.
-	feeTx, err = feeTx.Sign(network.TestNetworkPassphrase, pair)
+	feeTx, err = feeTx.Sign(network.TestNetworkPassphrase, generatedKp)
 	if err != nil {
 		log.Fatal(err)
 	}

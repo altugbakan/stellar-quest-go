@@ -14,13 +14,13 @@ func main() {
 	fmt.Scanln(&secret)
 
 	// Get the keypair of the quest account from the secret key.
-	questAccount, err := keypair.ParseFull(secret)
+	kp, err := keypair.ParseFull(secret)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Print the public key.
-	fmt.Printf("Your public key is %v\n", questAccount.Address())
+	fmt.Printf("Your public key is %v\n", kp.Address())
 
 	// Wait for user input to exit.
 	fmt.Println("Press \"Enter\" to exit.")
