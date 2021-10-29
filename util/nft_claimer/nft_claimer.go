@@ -40,14 +40,14 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// Get the claimable balance IDs from the Stellar Quest NFT issuer.
-	issuer := "GDJCU42KMWM4UCM4UZ3PNL3SDEH7LC6TTQTMXGKXZHSO2DHWBBYIGIVF"
-	var balanceIDs, balanceAmounts, assetNames []string
+	// Get the claimable balance IDs from the Stellar Quest NFT issuers.
+	var balanceIDs, balanceAmounts, issuers, assetNames []string
 	for _, balance := range claimableBalances.Embedded.Records {
-		if strings.HasSuffix(balance.Asset, issuer) {
+		if strings.HasPrefix(balance.Asset, "SQ") {
 			balanceIDs = append(balanceIDs, balance.BalanceID)
-			assetNames = append(assetNames, balance.Asset[:strings.Index(balance.Asset, ":")])
 			balanceAmounts = append(balanceAmounts, balance.Amount)
+			assetNames = append(assetNames, balance.Asset[:strings.Index(balance.Asset, ":")])
+			issuers = append(issuers, balance.Asset[strings.Index(balance.Asset, ":")+1:])
 			break
 		}
 	}
@@ -62,7 +62,7 @@ func main() {
 	for i := range balanceIDs {
 		asset, err := txnbuild.CreditAsset{
 			Code:   assetNames[i],
-			Issuer: issuer,
+			Issuer: issuers[i],
 		}.ToChangeTrustAsset()
 		if err != nil {
 			log.Fatal(err)
