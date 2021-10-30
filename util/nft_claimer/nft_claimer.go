@@ -11,23 +11,6 @@ import (
 	"github.com/stellar/go/txnbuild"
 )
 
-func is_official_issuer(issuer string) bool {
-	officialIssuers := [6]string{
-		"GAICLDUA5WSJ3KQPIHQU4KNSJ7FAKVO35RFFIGZXY3ZML3T3YHRPHT7R",
-		"GDJCU42KMWM4UCM4UZ3PNL3SDEH7LC6TTQTMXGKXZHSO2DHWBBYIGIVF",
-		"GBZMBLMCJEDIIM5IMWMFNHK35YXNXLUF3HLL2IYMFP7WRGDU5Y6OZVQQ",
-		"GB5TXD7KKU7R4Z3ZJQBWRAA3DN3CWP6RAXU75SCIGA2HYJLW5FJZ234N",
-		"GCFAFBICWS5U4YK6NHJKOAHWX3VGCHQWKS2XMTK6NQCX2YCLUFPODADN",
-		"GBP7IEA2U4QQUTP67ML56YNUC4RY34DKYPFOAAAYYZSJJY3YA55NCUBS",
-	}
-	for _, officialIssuer := range officialIssuers {
-		if officialIssuer == issuer {
-			return true
-		}
-	}
-	return false
-}
-
 func main() {
 	// Get the secret key from user input.
 	var secret string
@@ -60,12 +43,11 @@ func main() {
 	// Get the claimable balance IDs from the Stellar Quest NFT issuers.
 	var balanceIDs, balanceAmounts, issuers, assetNames []string
 	for _, balance := range claimableBalances.Embedded.Records {
-		issuer := balance.Asset[strings.Index(balance.Asset, ":")+1:]
-		if is_official_issuer(issuer) {
+		if strings.HasPrefix(balance.Asset, "SQ") {
 			balanceIDs = append(balanceIDs, balance.BalanceID)
 			balanceAmounts = append(balanceAmounts, balance.Amount)
 			assetNames = append(assetNames, balance.Asset[:strings.Index(balance.Asset, ":")])
-			issuers = append(issuers, issuer)
+			issuers = append(issuers, balance.Asset[strings.Index(balance.Asset, ":")+1:])
 			break
 		}
 	}
