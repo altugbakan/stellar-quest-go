@@ -48,7 +48,6 @@ func main() {
 			balanceAmounts = append(balanceAmounts, balance.Amount)
 			assetNames = append(assetNames, balance.Asset[:strings.Index(balance.Asset, ":")])
 			issuers = append(issuers, balance.Asset[strings.Index(balance.Asset, ":")+1:])
-			break
 		}
 	}
 	if len(balanceIDs) == 0 {
