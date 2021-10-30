@@ -26,7 +26,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// Fund the quest account.
+	// Fund and create the quest account.
 	resp, err := http.Get("https://friendbot.stellar.org/?addr=" + questKp.Address())
 	if err != nil {
 		log.Fatal(err)

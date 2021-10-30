@@ -32,7 +32,7 @@ func main() {
 	fmt.Printf("The generated secret key is %v\n", generatedKp.Seed())
 	fmt.Printf("The generated public key is %v\n", generatedKp.Address())
 
-	// Fund the generated account.
+	// Fund and create the generated account.
 	resp, err := http.Get("https://friendbot.stellar.org/?addr=" + generatedKp.Address())
 	if err != nil {
 		log.Fatal(err)
