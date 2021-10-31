@@ -127,7 +127,7 @@ func main() {
 	fmt.Printf("Successfully submitted transaction!\nTransaction ID: %v\n", status.ID)
 
 	// Inform the user and wait for user input to exit.
-	fmt.Print("The claimed NFTs are: ")
+	fmt.Print("Claimed: ")
 	for i, asset := range assetNames {
 		if i > 0 {
 			fmt.Print(", ")
