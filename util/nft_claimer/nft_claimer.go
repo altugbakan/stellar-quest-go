@@ -11,11 +11,9 @@ import (
 	"github.com/stellar/go/txnbuild"
 )
 
-var officialIssuers []string
-
-func is_official_issuer(issuer string) bool {
-	for _, officialIssuer := range officialIssuers {
-		if officialIssuer == issuer {
+func in_slice(searched_element string, elements []string) bool {
+	for _, element := range elements {
+		if element == searched_element {
 			return true
 		}
 	}
@@ -24,7 +22,7 @@ func is_official_issuer(issuer string) bool {
 
 func main() {
 	// Initialize official issuers.
-	officialIssuers = []string{
+	officialIssuers := []string{
 		"GAICLDUA5WSJ3KQPIHQU4KNSJ7FAKVO35RFFIGZXY3ZML3T3YHRPHT7R",
 		"GDJCU42KMWM4UCM4UZ3PNL3SDEH7LC6TTQTMXGKXZHSO2DHWBBYIGIVF",
 		"GBZMBLMCJEDIIM5IMWMFNHK35YXNXLUF3HLL2IYMFP7WRGDU5Y6OZVQQ",
@@ -62,12 +60,11 @@ func main() {
 	}
 
 	// Get the claimable balance IDs from the Stellar Quest NFT issuers.
-	var balanceIDs, balanceAmounts, issuers, assetNames []string
+	var balanceIDs, issuers, assetNames []string
 	for _, balance := range claimableBalances.Embedded.Records {
 		issuer := balance.Asset[strings.Index(balance.Asset, ":")+1:]
-		if is_official_issuer(issuer) {
+		if in_slice(issuer, officialIssuers) {
 			balanceIDs = append(balanceIDs, balance.BalanceID)
-			balanceAmounts = append(balanceAmounts, balance.Amount)
 			assetNames = append(assetNames, balance.Asset[:strings.Index(balance.Asset, ":")])
 			issuers = append(issuers, issuer)
 		}
@@ -80,18 +77,22 @@ func main() {
 
 	// Build change trust and claim claimable balance operations.
 	var ops []txnbuild.Operation
+	var trusted []string
 	for i := range balanceIDs {
-		asset, err := txnbuild.CreditAsset{
-			Code:   assetNames[i],
-			Issuer: issuers[i],
-		}.ToChangeTrustAsset()
-		if err != nil {
-			log.Fatal(err)
+		// Do not trust already trusted assets.
+		if !in_slice(assetNames[i], trusted) {
+			asset, err := txnbuild.CreditAsset{
+				Code:   assetNames[i],
+				Issuer: issuers[i],
+			}.ToChangeTrustAsset()
+			if err != nil {
+				log.Fatal(err)
+			}
+			ops = append(ops, &txnbuild.ChangeTrust{
+				Line: asset,
+			})
+			trusted = append(trusted, assetNames[i])
 		}
-		ops = append(ops, &txnbuild.ChangeTrust{
-			Line:  asset,
-			Limit: balanceAmounts[i],
-		})
 		ops = append(ops, &txnbuild.ClaimClaimableBalance{
 			BalanceID: balanceIDs[i],
 		})
