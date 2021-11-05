@@ -49,9 +49,9 @@ func main() {
 
 	// Build a path payment operation.
 	paymentOp := txnbuild.PathPaymentStrictReceive{
+		Destination: questKp.Address(),
 		SendAsset:   asset,
 		SendMax:     "1",
-		Destination: questKp.Address(),
 		DestAsset:   asset,
 		DestAmount:  "1",
 	}
