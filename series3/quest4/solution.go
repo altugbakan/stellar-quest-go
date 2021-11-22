@@ -13,9 +13,9 @@ import (
 )
 
 func main() {
-	// Ask user for secret key input.
+	// Get the secret key from user input.
 	var secret string
-	fmt.Printf("Please enter your secret key: ")
+	fmt.Printf("Please enter the quest account's secret key: ")
 	fmt.Scanln(&secret)
 
 	// Get the keypair of the quest account from the secret key.

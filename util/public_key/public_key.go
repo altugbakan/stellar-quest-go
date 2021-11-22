@@ -13,7 +13,7 @@ func main() {
 	fmt.Printf("Please enter your secret key: ")
 	fmt.Scanln(&secret)
 
-	// Get the keypair of the quest account from the secret key.
+	// Get the keypair of the account from the secret key.
 	kp, err := keypair.ParseFull(secret)
 	if err != nil {
 		log.Fatal(err)

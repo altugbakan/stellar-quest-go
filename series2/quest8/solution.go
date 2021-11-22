@@ -11,11 +11,11 @@ import (
 )
 
 func main() {
-	// Ask user for secret key and domain name input.
+	// Get the secret key and the domain name from user input.
 	var secret, domainName string
-	fmt.Printf("Please enter your secret key: ")
+	fmt.Printf("Please enter the quest account's secret key: ")
 	fmt.Scanln(&secret)
-	fmt.Printf("Please enter your domain name (Without https://): ")
+	fmt.Printf("Please enter the domain name (Without https://): ")
 	fmt.Scanln(&domainName)
 
 	// Get the keypair of the quest account from the secret key.

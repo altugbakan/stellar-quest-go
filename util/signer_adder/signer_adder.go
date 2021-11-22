@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	// Get the secret key from user input.
+	// Get the secret keys from user input.
 	var address, personal string
 	fmt.Printf("Please enter the quest account's public key: ")
 	fmt.Scanln(&address)
