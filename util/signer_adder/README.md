@@ -1,0 +1,2 @@
+# Signer Adder
+Adds the user's account as a [signer](https://developers.stellar.org/docs/glossary/multisig/) to the quest account. Handy for preventing other people to claim the account you are working on.
