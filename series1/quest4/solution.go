@@ -91,7 +91,7 @@ func main() {
 	// Print the response.
 	fmt.Printf("Successfully submitted transaction!\nTransaction ID: %v\n", status.ID)
 
-	// Create a dummy operation to use multisig.
+	// Build a dummy operation to use multisig.
 	dummyOp := txnbuild.Payment{
 		Destination: questKp.Address(),
 		Asset:       txnbuild.NativeAsset{},

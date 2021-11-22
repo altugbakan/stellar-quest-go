@@ -49,9 +49,14 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// Convert the given clue to string, then hash it.
-	secretKey, _ := base64.StdEncoding.DecodeString("S2FuYXllTmV0")
-	hash := sha256.Sum256(secretKey)
+	// Convert the given clue to string.
+	clue, err := base64.StdEncoding.DecodeString("S2FuYXllTmV0")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Hash and encode the clue.
+	hash := sha256.Sum256(clue)
 	hashAddress, err := strkey.Encode(strkey.VersionByteHashX, hash[:])
 	if err != nil {
 		log.Fatal(err)
@@ -117,7 +122,7 @@ func main() {
 	}
 
 	// Sign the transaction with the previously added hash.
-	tx, err = tx.SignHashX(secretKey)
+	tx, err = tx.SignHashX(clue)
 	if err != nil {
 		log.Fatal(err)
 	}
