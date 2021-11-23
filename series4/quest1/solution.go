@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	// Get the given secret key and emoji from user input.
+	// Get the secret key and emoji from user input.
 	var secret, emoji string
 	fmt.Printf("Please enter the given secret key: ")
 	fmt.Scanln(&secret)
