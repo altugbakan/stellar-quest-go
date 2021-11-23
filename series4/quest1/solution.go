@@ -40,6 +40,13 @@ func main() {
 	}
 	resp.Body.Close()
 
+	// Get and print the response from friendbot.
+	if resp.Status == "200 OK" {
+		fmt.Println("Successfully funded account.")
+	} else {
+		fmt.Println("Error funding account.")
+	}
+
 	// Fetch the account from the network.
 	client := horizonclient.DefaultTestNetClient
 	questAccount, err := client.AccountDetail(horizonclient.AccountRequest{
