@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 
@@ -47,7 +47,7 @@ func main() {
 	}
 
 	// Get the quest XDR.
-	questXdrBytes, _ := ioutil.ReadAll(resp.Body)
+	questXdrBytes, _ := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
