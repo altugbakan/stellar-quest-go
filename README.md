@@ -1,5 +1,5 @@
-# Stellar Quest Go Solutions
-Solutions implemented in [Go](https://golang.org/) for [Stellar Quest](https://quest.stellar.org/) using the [Stellar Go SDK](https://github.com/stellar/go).
+# Legacy Stellar Quest Go Solutions
+Solutions implemented in [Go](https://golang.org/) for [Legacy Stellar Quest](https://quest-legacy.stellar.org/) using the [Stellar Go SDK](https://github.com/stellar/go).
 
 ## Usage
 Run the code using `go run ./series[series_number]/quest[quest_number]` from terminal. Enter your private testnet key obtained from the quest and your quest will be automatically completed.
