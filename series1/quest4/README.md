@@ -1,7 +1,7 @@
 # Add multisig to your account and make use of it in a transaction
 In this challenge, your task is to **add and then make use of multisig** on your account.
 
-** _⚠️_ Please take your time with this one _⚠️_ **
+**_⚠️_ Please take your time with this one _⚠️_**
 If you get it wrong you could lock yourself out of your account for the remainder of the series.
 Nervous? [Pop into the official Stellar Quest Discord](https://discord.com/invite/8FhvuKb) and verify before submitting.
 
