@@ -11,18 +11,18 @@ So let’s get to it.
 2. Go to the Build Transaction tab
 3. Fill out the necessary fields and select Payment as the Operation Type, let’s talk about what we see here
 
-**Destination**
+#### Destination
 Who’s the lucky recipient of the `payment` operation?
 
-**Asset**
+#### Asset
 What asset you’d like to send. Assets on Stellar can represent many things: digital currencies (such as bitcoin), fiat currencies (USDC), or other tokens of value (such as NFTs).
 
 For this quest, we’ll use the native XLM token and cover custom assets later.
 
-**Amount**
+#### Amount
 How much of the asset you’re going to send. Remember you can only send what you have.
 
-**Source Account**
+#### Source Account
 What account will the network be subtracting funds from? Remember you can leave this blank and it will assume the transaction source.
 
 4. Once you have the necessary fields completed, sign the transaction
