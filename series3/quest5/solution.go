@@ -119,10 +119,10 @@ func main() {
 	}
 
 	// Build a change trust operation to allow assets from the issuer.
+	changeTrustAsset, err := asset.ToChangeTrustAsset()
 	if err != nil {
 		log.Fatal(err)
 	}
-	changeTrustAsset, err := asset.ToChangeTrustAsset()
 	trustOp := txnbuild.ChangeTrust{
 		Line: changeTrustAsset,
 	}
