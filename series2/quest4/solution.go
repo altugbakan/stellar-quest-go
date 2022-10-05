@@ -41,7 +41,6 @@ func main() {
 		Destinations: []txnbuild.Claimant{
 			txnbuild.NewClaimant(questKp.Address(), &predicate),
 		},
-		SourceAccount: "",
 	}
 
 	// Construct the transaction.
