@@ -1,5 +1,7 @@
 # Set Options - Home Domain
+
 ### Set the home domain of an account
+
 <br>
 
 It’s time to dip our toes into the wild and wonderful world of the `setOptions` operation. There will be several quests that involve this operation but here we’ll just focus on the Home Domain field.
@@ -30,6 +32,7 @@ Let’s get this going.
 12. If your transaction is successful, click Verify in the Stellar Quest Learn screen and claim your badge!
 
 ## Additional resources
+
 Explore the spec for this stellar.toml Stellar Info File here: https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0001.md
 
 Explore an example stellar toml file in the wild here: https://testanchor.stellar.org/.well-known/stellar.toml

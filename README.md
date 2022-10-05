@@ -1,15 +1,32 @@
 # Stellar Quest Go Solutions
-Solutions implemented in [Go](https://golang.org/) for [Stellar Quest](https://quest.stellar.org/) using the [Stellar Go SDK](https://github.com/stellar/go). 
 
-Check out [old-solutions](https://github.com/altugbakan/stellar-quest-go/tree/old-solutions) branch for the solutions to old quests. 
+Solutions implemented in [Go](https://golang.org/) for [Stellar Quest](https://quest.stellar.org/) using the [Stellar Go SDK](https://github.com/stellar/go).
+
+Check out [old-solutions](https://github.com/altugbakan/stellar-quest-go/tree/old-solutions) branch for the solutions to old quests.
+
+## Requirements
+
+- [Go](https://go.dev/)
 
 ## Usage
-Run the code using `go run ./[category_name]/[quest_name]` from terminal. Enter your private testnet key obtained from the quest and your quest will be automatically completed.
 
-## Build
-The project is built using Go 1.18.
+1. Clone or Fork this repository
+
+```shell
+git clone https://github.com/altugbakan/stellar-quest-go
+cd stellar-quest-go
+```
+
+2. Run the code using
+
+```shell
+go run ./[category_name]/[quest_name]
+```
+
+from your terminal. Enter your private testnet key obtained from the quest and your quest will be automatically completed.
 
 ## Donations
+
 Thank you for donating!
 
 <div align="center">

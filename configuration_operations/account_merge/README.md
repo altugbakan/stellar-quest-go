@@ -1,5 +1,7 @@
 # Accout Merge
+
 ### Delete an account by transferring its XLM balance to another account
+
 <br>
 Before we progress too far into our Stellar operational journey, we should talk about how to delete accounts.
 

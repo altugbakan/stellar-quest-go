@@ -1,5 +1,7 @@
 # Manage Data
+
 ### Add a data entry to an account
+
 <br>
 Accounts are the backbone of Stellar applications and have a part in any action you take on the network. One class of actions, and it’s an important one, involves setting, modifying, or deleting data entries within an account’s metadata. Data entries are a key/value pair and attach arbitrary, application-specific data to an account on the Stellar network. Each data entry increases the account’s minimum balance by one base reserve.
 
@@ -7,7 +9,7 @@ Accounts are the backbone of Stellar applications and have a part in any action 
 
 1. You guessed it, navigate to the [Laboratory](https://laboratory.stellar.org/#account-creator?network=test)
 2. Build a transaction with Manage Data as the operation — let’s talk about what’s here:
-**Entry Name**
+   **Entry Name**
 
 The string value name of your key/value pair; must be less than or equal to 64 characters
 

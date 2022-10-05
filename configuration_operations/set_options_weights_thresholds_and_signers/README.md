@@ -1,5 +1,7 @@
 # Set Options - Weights, Thresholds, and Signers
+
 ### Set the master key’s weight, determine the operation threshold, and manage signers
+
 <br>
 Imagine you’re an adventurer. You and two companions have battled foes across land and sea to collect three keys, hoping they will unlock a vault door guarding a vast treasure. After much tribulation, your squad stands at the door, bewildered, on the brink of despair — the door is sealed with not three locks but five. You cast your eyes down in defeat. Wait, what is that? You see the number “2” etched into the key in your right palm. Curious, you implore your allies to look at their own keys. Ah hah! One has a “2” and the other a “1”. Your brilliant mind starts churning, and you realize that two of the keys fit two of the locks. Shaking, you insert the keys into their locks and turn. At the last spin of the final key, the vault door creaks open, revealing the priceless treasure you’ve journeyed so far to acquire. Ring Pops! Thousands upon thousands of sparkling, crystalline, tantalizing Ring Pops! What a journey. What a puzzle.
 

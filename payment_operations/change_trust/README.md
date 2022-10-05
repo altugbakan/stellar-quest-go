@@ -1,5 +1,7 @@
 # Change Trust
+
 ### Create a trustline between two accounts for a designated asset
+
 <br>
 So far in our Stellar Quest Learn journey, we’ve just worked with Stellar’s native token, XLM. In this quest, we’ll learn about what needs to happen to start handling custom assets. Custom assets aren’t created, they exist in the form of trust on other accounts. Like Santa, they only exist for those who believe (am I banned?). In Stellar, this belief is called a trustline.
 
@@ -28,7 +30,7 @@ The Issuer Account ID is the public key of the account that is issuing the asset
 
 **Trust Limit**
 
-How much do you *really* trust Santa?
+How much do you _really_ trust Santa?
 
 This field determines how much of the asset your account can hold. Leaving this field blank allows for the maximum amount.
 
