@@ -2,12 +2,12 @@ package main
 
 import (
 	"bytes"
+	"embed"
 	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/stellar/go/clients/horizonclient"
 	"github.com/stellar/go/keypair"
@@ -29,6 +29,9 @@ type nftStorageResponse struct {
 	} `json:"value"`
 }
 
+//go:embed pug.png
+var image embed.FS
+
 func main() {
 	// Get the NFT.Storage API key from user input
 	var apiKey string
@@ -41,15 +44,11 @@ func main() {
 	fmt.Scanln(&secret)
 
 	// Store the image using NFT.Storage
-	wd, err := os.Getwd()
+	img, err := image.ReadFile("pug.png")
 	if err != nil {
 		log.Fatal(err)
 	}
-	img, err := os.Open(wd + "/side_quests/mint_an_nft_on_stellar/pug.png")
-	if err != nil {
-		log.Fatal(err)
-	}
-	req, err := http.NewRequest("POST", "https://api.nft.storage/upload", img)
+	req, err := http.NewRequest("POST", "https://api.nft.storage/upload", bytes.NewReader(img))
 	if err != nil {
 		log.Fatal(err)
 	}
