@@ -1,6 +1,6 @@
-# Stellar Quest Go Solutions
+# Stellar Quest Learn Solutions in Go
 
-Solutions implemented in [Go](https://golang.org/) for [Stellar Quest](https://quest.stellar.org/) using the [Stellar Go SDK](https://github.com/stellar/go).
+Solutions implemented in [Go](https://golang.org/) for [Stellar Quest Learn](https://quest.stellar.org/learn) using the [Stellar Go SDK](https://github.com/stellar/go).
 
 Check out [old-solutions](https://github.com/altugbakan/stellar-quest-go/tree/old-solutions) branch for the solutions to old quests.
 
